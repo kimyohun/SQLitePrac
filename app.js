@@ -37,51 +37,58 @@ const db = new sqlite3.Database('./mydb.sqlite');
 
 */
 db.serialize(() => {
-  // 테이블 생성 (Create)
-  db.run(`CREATE TABLE IF NOT EXISTS users (
+    // 테이블 생성 (Create)
+    db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     tickerName TEXT,
     closePrice INTEGER)`);
 
-    const stockList = {name : "APPLE", tickerName : "AAPL", closePrice : 220}
+    const stockList = [
+        { name: "APPLE", tickerName: "AAPL", closePrice: 220 },
+        { name: "MicroSoft", tickerName: "MSFT", closePrice: 150 },
+        { name: "Nvidia", tickerName: "NVDA", closePrice: 300 },
+        { name: "Amazon", tickerName: "AMZN", closePrice: 380 },
+    ]
 
+    for (let index = 0; index < stockList.length; index++) {
+        db.run(`INSERT INTO users (name, tickerName, closePrice) VALUES ("${stockList[index].name}", "${stockList[index].tickerName}", ${stockList[index].closePrice})`, (err) => {
+            if (err) {
+                console.error(err.message);
+            } else {
+                console.log('데이터 추가 성공');
+            }
+        });
 
-  // 데이터 추가 (Create)
-  db.run(`INSERT INTO users (name, tickerName, closePrice) VALUES ("${stockList.name}", "${stockList.tickerName}", ${stockList.closePrice})`, (err) => {
-    if (err) {
-      console.error(err.message);
-    } else {
-      console.log('데이터 추가 성공');
     }
-  });
+    // 데이터 추가 (Create)
 
-//   // 데이터 조회 (Read)
-//   db.each(`SELECT id, name, age FROM users`, (err, row) => {
-//     if (err) {
-//       console.error(err.message);
-//     } else {
-//       console.log(row.id + '\t' + row.name + '\t' + row.age);
-//     }
-//   });
+    // 데이터 조회 (Read)
+    db.each(`SELECT id, name, tickerName, closePrice FROM users where name = "${stockList[0].name}" `, (err, row) => {
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log(row)
+        }
+    });
 
-//   // 데이터 수정 (Update)
-//   db.run(`UPDATE users SET age = 31 WHERE name = 'Alice'`, (err) => {
-//     if (err) {
-//       console.error(err.message);
-//     } else {
-//       console.log('데이터 수정 성공');
-//     }
-//   });
+    //   // 데이터 수정 (Update)
+    //   db.run(`UPDATE users SET age = 31 WHERE name = 'Alice'`, (err) => {
+    //     if (err) {
+    //       console.error(err.message);
+    //     } else {
+    //       console.log('데이터 수정 성공');
+    //     }
+    //   });
 
-//   // 데이터 삭제 (Delete)
-//   db.run(`DELETE FROM users WHERE name = 'Alice'`, (err) => {
-//     if (err) {
-//       console.error(err.message);
-//     } else {
-//       console.log('데이터 삭제 성공');
-//     }
-//   });
+    //   // 데이터 삭제 (Delete)
+    //   db.run(`DELETE FROM users WHERE name = 'Alice'`, (err) => {
+    //     if (err) {
+    //       console.error(err.message);
+    //     } else {
+    //       console.log('데이터 삭제 성공');
+    //     }
+    //   });
 });
 
 db.close();
