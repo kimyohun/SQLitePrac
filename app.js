@@ -42,16 +42,13 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     tickerName TEXT,
+    closePrice INTEGER)`);
 
-  )`);
+    const stockList = {name : "APPLE", tickerName : "AAPL", closePrice : 220}
 
-    const stockList = {
-        
-
-    }
 
   // 데이터 추가 (Create)
-  db.run(`INSERT INTO users (name, age) VALUES ('Alice', 30)`, (err) => {
+  db.run(`INSERT INTO users (name, tickerName, closePrice) VALUES ("${stockList.name}", "${stockList.tickerName}", ${stockList.closePrice})`, (err) => {
     if (err) {
       console.error(err.message);
     } else {
